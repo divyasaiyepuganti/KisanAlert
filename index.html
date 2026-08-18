@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>KisanAlert</title>
+
+    <!-- Connect CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<style>
+    /* Direct Hover Animations for Cards & Buttons */
+    div[class*="-card"], div[class*="card"], .alert-history {
+        transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    }
+
+    div[class*="-card"]:hover, div[class*="card"]:hover, .alert-history:hover {
+        transform: translateY(-6px) !important;
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    button {
+        transition: all 0.2s ease-in-out !important;
+    }
+
+    button:hover {
+        transform: translateY(-2px) scale(1.03) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        filter: brightness(1.1) !important;
+    }
+
+    img {
+        transition: transform 0.4s ease !important;
+    }
+
+    div:hover > img {
+        transform: scale(1.06) !important;
+    }
+</style>
+</head>
+
+
+<body>
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header>
+
+        <h1>🌾 KisanAlert</h1>
+
+        <p>Farmer Early Warning System</p>
+        
+        <!-- =========================
+             LANGUAGE SELECTOR 
+        ========================== -->
+       <div class="lang-selector-container" style="text-align: right; padding: 10px 20px;">
+<label for="languageSelect" style="font-weight: bold; margin-right: 5px;">🌐 Language:</label>
+<select id="languageSelect" onchange="changeLanguage()" style="padding: 5px 10px; border-radius: 5px;">
+    <option value="en" selected>English</option>
+    <option value="te">తెలుగు (Telugu)</option>
+</select>
+</div>
+
+        <!-- Hidden Google Translate element required for backend script execution -->
+        <div id="google_translate_element" style="display:none;"></div>
+
+    </header>
+    <div style="text-align: center; margin: 15px 0;">
+    <span style="display: inline-flex; align-items: center; gap: 8px; background: #e8f5e9; color: #2e7d32; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; border: 1px solid #c8e6c9; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <span style="width: 8px; height: 8px; background: #2e7d32; border-radius: 50%; display: inline-block; animation: liveBlink 1.5s infinite;"></span>
+        AI Monitoring Active (AP Region)
+    </span>
+</div>
+
+<style>
+@keyframes liveBlink {
+    0% { transform: scale(0.95); opacity: 0.5; box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.4); }
+    70% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 6px rgba(46, 125, 50, 0); }
+    100% { transform: scale(0.95); opacity: 0.5; box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); }
+}
+</style>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main>
+
+<section class="location-card">
+
+    <h2>📍 Your Location</h2>
+
+    <div id="locationStatus">
+        Location not detected
+    </div>
+
+    <div id="coordinates">
+        Latitude: --
+        <br>
+        Longitude: --
+    </div>
+
+    <div id="locationName">
+        📍 Location name will appear here
+    </div>
+
+    <button onclick="useMyLocation()">
+        📍 Use My Location
+    </button>
+    <!-- =========================
+     FIELD MAP
+========================== -->
+
+<div class="map-section">
+
+    <h3>🗺️ Your Field Location</h3>
+
+    <p>
+        Your detected location will appear on the map.
+    </p>
+
+    <div id="fieldMap"></div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     WEATHER SECTION
+========================== -->
+
+<section class="weather-card">
+
+    <h2>🌦️ Current Weather</h2>
+
+    <div id="weatherStatus">
+        Weather data will appear after location detection.
+    </div>
+
+    <div class="weather-grid">
+
+        <div class="weather-item">
+            <span>🌡️</span>
+            <h3>Temperature</h3>
+            <p id="temperature">-- °C</p>
+        </div>
+
+
+        <div class="weather-item">
+            <span>💧</span>
+            <h3>Humidity</h3>
+            <p id="humidity">-- %</p>
+        </div>
+
+
+        <div class="weather-item">
+            <span>🌧️</span>
+            <h3>Rain</h3>
+            <p id="rain">-- mm</p>
+        </div>
+
+
+        <div class="weather-item">
+            <span>💨</span>
+            <h3>Wind</h3>
+            <p id="wind">-- km/h</p>
+        </div>
+
+    </div>
+
+
+    <div class="weather-condition">
+
+        <h3>☁️ Condition</h3>
+
+        <p id="weatherCondition">
+            --
+        </p>
+
+    </div>
+    <!-- =========================
+     WEATHER FORECAST
+========================== -->
+
+<div class="forecast-section">
+
+    <h3>🔮 3-Day Forecast</h3>
+
+    <div id="forecastContainer">
+
+        <p>
+            Forecast will appear after location detection.
+        </p>
+
+    </div>
+
+</div>
+
+</section>
+<!-- =========================
+     CROP SELECTION
+========================== -->
+
+<section class="crop-card">
+   
+    <h2>🌱 Select Your Crop</h2>
+
+    <p>
+        Select the crop currently growing in your field.
+    </p>
+
+    <select id="cropSelect">
+
+        <option value="">
+            -- Select Crop --
+        </option>
+
+        <option value="rice">
+            🌾 Rice
+        </option>
+
+        <option value="maize">
+            🌽 Maize
+        </option>
+
+        <option value="tomato">
+            🍅 Tomato
+        </option>
+
+        <option value="chilli">
+            🌶️ Chilli
+        </option>
+
+        <option value="groundnut">
+            🥜 Groundnut
+        </option>
+
+    </select>
+    <!-- SELECT SEASON BLOCK -->
+        <div class="season-selector-card" style="margin-top: 15px; margin-bottom: 15px;">
+            <label for="seasonSelect" style="font-weight: bold; display: block; margin-bottom: 5px; color: #2e7d32;">📅 Select Farming Season:</label>
+            <select id="seasonSelect" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #c8e6c9; background: #f1f8e9; color: #2e7d32; font-weight: bold;">
+                <option value="">-- Select Season --</option>
+                <option value="kharif">🌧️ Kharif (Monsoon / Varsham)</option>
+                <option value="rabi">☀️ Rabi (Winter / Yasangi)</option>
+                <option value="zaid">🔥 Zaid (Summer)</option>
+            </select>
+            <p id="seasonStatus" style="font-size: 12px; color: #666; margin-top: 4px;">No season selected</p>
+        </div>
+
+    <p id="cropStatus">
+        No crop selected
+    </p>
+    <!-- =========================
+     FARM STATUS
+========================== -->
+
+<div class="farm-status">
+
+    <h3>🌱 Farm Status</h3>
+
+    <div class="status-grid">
+
+        <div class="status-item">
+
+            <span class="status-icon">
+                🌡️
+            </span>
+
+            <h4>Weather</h4>
+
+            <p id="weatherStatusIndicator">
+                Waiting...
+            </p>
+
+        </div>
+
+
+        <div class="status-item">
+
+            <span class="status-icon">
+                🌧️
+            </span>
+
+            <h4>Rain</h4>
+
+            <p id="rainStatusIndicator">
+                Waiting...
+            </p>
+
+        </div>
+
+
+        <div class="status-item">
+
+            <span class="status-icon">
+                🌱
+            </span>
+
+            <h4>Crop</h4>
+
+            <p id="cropStatusIndicator">
+                Not selected
+            </p>
+
+        </div>
+
+
+        <div class="status-item">
+
+            <span class="status-icon">
+                🔮
+            </span>
+
+            <h4>Forecast</h4>
+
+            <p id="forecastStatusIndicator">
+                Waiting...
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+<!-- =========================
+     FARMER ALERT
+========================== -->
+<!-- MANDI PRICES CARD -->
+<div class="mandi-card" style="background: #ffffff; padding: 15px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-left: 6px solid #2e7d32;">
+    <h3 style="margin: 0 0 10px 0; color: #2e7d32; display: flex; align-items: center; gap: 8px;">
+        📊 Local Mandi Market Prices
+    </h3>
+    <div style="display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; padding: 12px; border-radius: 8px;">
+        <div>
+            <span id="mandiCropName" style="font-weight: bold; font-size: 16px;">🌾 Selected Crop</span>
+            <p style="margin: 4px 0 0 0; font-size: 12px; color: #666;">Estimated Local AP/TS Mandi Rate</p>
+        </div>
+        <div style="text-align: right;">
+            <span id="mandiPrice" style="font-size: 18px; font-weight: bold; color: #2e7d32;">₹ -- / Quintal</span>
+            <p id="mandiTrend" style="margin: 4px 0 0 0; font-size: 12px; color: #388e3c;">📈 Trend: Stable</p>
+        </div>
+    </div>
+</div>
+<!-- AI PLANT DISEASE SCANNER CARD -->
+<div class="scanner-card" style="background: #ffffff; padding: 18px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-left: 6px solid #e65100;">
+    <h3 style="margin: 0 0 10px 0; color: #e65100; display: flex; align-items: center; gap: 8px;">
+        📷 AI Plant Disease Detector
+    </h3>
+    <p style="font-size: 13px; color: #555; margin-bottom: 12px;">
+        Upload a photo of damaged crop leaves to detect pests/diseases and get pesticide remedies.
+    </p>
+
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <input type="file" id="leafImageInput" accept="image/*" onchange="previewLeafImage(event)" style="font-size: 13px;">
+        <button onclick="scanPlantDisease()" style="background: #e65100; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+            🔍 Scan Leaf
+        </button>
+    </div>
+
+    <div id="scanResultBox" style="display: none; margin-top: 15px; padding: 12px; background: #fff3e0; border-radius: 8px; border: 1px dashed #e65100;">
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <img id="leafPreview" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; display: none;">
+            <div>
+                <h4 id="diseaseTitle" style="margin: 0; color: #d84315; font-size: 15px;">Detecting...</h4>
+                <p id="diseaseDetails" style="margin: 4px 0 0 0; font-size: 12px; color: #333;">Analyzing leaf patterns...</p>
+                <p id="diseaseRemedy" style="margin: 4px 0 0 0; font-size: 12px; font-weight: bold; color: #2e7d32;"></p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FERTILIZER CALCULATOR CARD -->
+<div class="fertilizer-card" style="background: #ffffff; padding: 18px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-left: 6px solid #1565c0;">
+    <h3 style="margin: 0 0 10px 0; color: #1565c0; display: flex; align-items: center; gap: 8px;">
+        🧪 Soil Health & Fertilizer Dosage Calculator
+    </h3>
+    <p style="font-size: 13px; color: #555; margin-bottom: 12px;">
+        Select soil type and farm area to get recommended Urea & NPK dosage.
+    </p>
+
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+        <select id="soilTypeSelect" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+            <option value="black">⬛ Black Soil (నల్లరేగడి)</option>
+            <option value="red">🟥 Red Soil (ఎర్ర నేలలు)</option>
+            <option value="sandy">🟨 Sandy/Loamy (ఇసుక నేలలు)</option>
+        </select>
+
+        <input type="number" id="acresInput" placeholder="Acres (ఎకరాలు)" value="1" min="1" style="width: 110px; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+
+        <button onclick="calculateFertilizer()" style="background: #1565c0; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+            🧮 Calculate Dosage
+        </button>
+    </div>
+
+    <div id="fertilizerResult" style="display: none; margin-top: 15px; padding: 12px; background: #e3f2fd; border-radius: 8px; border: 1px solid #90caf9;">
+        <h4 style="margin: 0 0 6px 0; color: #0d47a1; font-size: 14px;">🌱 Recommended Dosage per Acre:</h4>
+        <p id="ureaDosage" style="margin: 4px 0; font-size: 13px; color: #333;">• Urea: -- kg</p>
+        <p id="dapDosage" style="margin: 4px 0; font-size: 13px; color: #333;">• DAP / NPK: -- kg</p>
+        <p id="organicTip" style="margin: 4px 0; font-size: 12px; color: #2e7d32; font-weight: bold;">• Organic Suggestion: Add Organic Compost to retain nitrogen.</p>
+    </div>
+</div>
+<section class="alert-card">
+
+    <h2>🚨 Farmer Alert</h2>
+    <!-- Voice Warning Button -->
+<button id="speakBtn" onclick="speakAlert()" style="margin-top: 8px; padding: 6px 14px; background-color: #2e7d32; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; display: inline-flex; align-items: center; gap: 6px;">
+    🔊 Read Alert
+</button>
+<button onclick="window.print()" style="margin-top: 8px; margin-left: 8px; padding: 6px 14px; background-color: #0288d1; color: #ffffff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">
+    📄 Print / Save PDF
+</button>
+    <div id="alertBox">
+
+        <h3 id="alertTitle">
+            No alert yet
+        </h3>
+
+        <p id="alertMessage">
+            Select your location, weather and crop
+            to check for possible risks.
+        </p>
+
+        <p id="alertAction">
+            💡 Recommended action will appear here.
+        </p>
+        <button onclick="shareOnWhatsApp()" style="background-color: #25D366; color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">
+    📲 Share on WhatsApp
+</button>
+    </div>
+    <!-- =========================
+     EARLY WARNING
+========================== -->
+
+<div id="earlyWarningBox">
+
+    <h3>
+        🔮 Early Warning
+    </h3>
+
+    <p id="earlyWarningTitle">
+        Future warnings will appear here.
+    </p>
+
+    <p id="earlyWarningMessage">
+        KisanAlert will check upcoming weather
+        conditions.
+    </p>
+
+    <p id="earlyWarningAction">
+        💡 Recommended preparation will appear here.
+    </p>
+
+</div>
+
+<!-- =========================
+     SMART FARM ACTION
+========================== -->
+
+<div id="farmActionBox">
+
+    <h3>💧 Smart Farm Action</h3>
+
+    <p id="farmActionTitle">
+        Farm advice will appear here.
+    </p>
+
+    <p id="farmActionMessage">
+        KisanAlert will analyse upcoming rainfall
+        and help you plan farm activities.
+    </p>
+
+</div>
+<!-- =========================
+     FIELD ACTIVITY PLANNER
+========================== -->
+
+<div id="activityPlannerBox">
+
+    <h3>📅 Field Activity Planner</h3>
+
+    <p id="activityPlannerStatus">
+        Activity recommendations will appear here.
+    </p>
+
+    <div id="activityList">
+
+        <div class="activity-item">
+
+            <span>💧 Irrigation</span>
+
+            <strong id="irrigationAdvice">
+                Waiting...
+            </strong>
+
+        </div>
+
+
+        <div class="activity-item">
+
+            <span>🧪 Spraying</span>
+
+            <strong id="sprayingAdvice">
+                Waiting...
+            </strong>
+
+        </div>
+
+
+        <div class="activity-item">
+
+            <span>🌱 Field Work</span>
+
+            <strong id="fieldWorkAdvice">
+                Waiting...
+            </strong>
+
+        </div>
+
+
+        <div class="activity-item">
+
+            <span>🌾 Harvesting</span>
+
+            <strong id="harvestingAdvice">
+                Waiting...
+            </strong>
+
+        </div>
+
+    </div>
+
+</div>
+
+   
+        <button id="checkAlertButton" onclick="checkFarmAlert()">
+        🔍 Check Farm Alert
+    </button>
+    <!-- SOIL MOISTURE & DROUGHT ALERT CARD -->
+<div class="drought-card" style="background: #ffffff; padding: 18px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-left: 6px solid #d32f2f;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 style="margin: 0; color: #c62828; display: flex; align-items: center; gap: 8px;">
+            🌵 Soil Moisture & Drought Risk Indicator
+        </h3>
+        <!-- LOW DATA / AUDIO TOGGLE BUTTON -->
+        <button id="lowDataBtn" onclick="toggleLowDataMode()" style="background: #e0f7fa; color: #006064; border: 1px solid #00acc1; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 11px;">
+            📡 Low Data Mode: OFF
+        </button>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 10px;">
+        <div style="background: #fff8e1; padding: 12px; border-radius: 8px; border: 1px solid #ffe082;">
+            <span style="font-size: 12px; color: #555;">Live Moisture Index</span>
+            <h4 id="moistureLevel" style="margin: 4px 0 0 0; color: #e65100; font-size: 18px;">22% (Dry Soil)</h4>
+        </div>
+
+        <div style="background: #ffebee; padding: 12px; border-radius: 8px; border: 1px solid #ffcdd2;">
+            <span style="font-size: 12px; color: #555;">Drought Warning Status</span>
+            <h4 id="droughtStatus" style="margin: 4px 0 0 0; color: #c62828; font-size: 16px;">⚠️ Moderate Risk</h4>
+        </div>
+    </div>
+    <p id="lowDataNote" style="font-size: 11px; color: #00838f; margin-top: 8px; display: none;">
+        ⚡ <strong>Low Data Mode Active:</strong> High-resolution maps disabled. Audio alerts prioritized for weak internet.
+    </p>
+</div>
+    <!-- VISUAL CROP HEALTH & PEST GALLERY CARD -->
+<div class="pest-gallery-card" style="background: #ffffff; padding: 18px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-left: 6px solid #8e24aa;">
+    <h3 style="margin: 0 0 10px 0; color: #8e24aa; display: flex; align-items: center; gap: 8px;">
+        🐛 Common Crop Pests & Disease Gallery
+    </h3>
+    <p style="font-size: 13px; color: #555; margin-bottom: 12px;">
+        Identify common crop threats visually and take early preventive action.
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+        <!-- Card 1 -->
+        <div style="border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; background: #fafafa;">
+            <img src="https://images.unsplash.com/photo-1592417817098-8f3d6eb231fc?auto=format&fit=crop&w=400&q=80" alt="Stem Borer" style="width: 100%; height: 120px; object-fit: cover;">
+            <div style="padding: 10px;">
+                <h4 style="margin: 0; font-size: 14px; color: #6a1b9a;">🐛 Stem Borer (తొలుచు పురుగు)</h4>
+                <p style="margin: 4px 0 0 0; font-size: 12px; color: #555;">Causes dead hearts in young plants.</p>
+                <p style="margin: 4px 0 0 0; font-size: 11px; font-weight: bold; color: #d32f2f;">Remedy: Chlorantraniliprole 0.4% G</p>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div style="border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; background: #fafafa;">
+            <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=400&q=80" alt="Leaf Blight" style="width: 100%; height: 120px; object-fit: cover;">
+            <div style="padding: 10px;">
+                <h4 style="margin: 0; font-size: 14px; color: #6a1b9a;">🍂 Leaf Blight (ఆకు ఎండు తెగులు)</h4>
+                <p style="margin: 4px 0 0 0; font-size: 12px; color: #555;">Yellowish to brownish leaf lesions.</p>
+                <p style="margin: 4px 0 0 0; font-size: 11px; font-weight: bold; color: #d32f2f;">Remedy: Spray Tricyclazole 75% WP</p>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div style="border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; background: #fafafa;">
+            <img src="https://images.unsplash.com/photo-1628352081506-83c43123ed6d?auto=format&fit=crop&w=400&q=80" alt="Fall Armyworm" style="width: 100%; height: 120px; object-fit: cover;">
+            <div style="padding: 10px;">
+                <h4 style="margin: 0; font-size: 14px; color: #6a1b9a;">🐛 Fall Armyworm (కత్తెర పురుగు)</h4>
+                <p style="margin: 4px 0 0 0; font-size: 12px; color: #555;">Severe leaf damage in Maize & Cotton.</p>
+                <p style="margin: 4px 0 0 0; font-size: 11px; font-weight: bold; color: #d32f2f;">Remedy: Emamectin Benzoate 5% SG</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="insurance-card" style="background: #ffffff; padding: 18px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-left: 6px solid #673ab7;">
+            <h3 style="margin: 0 0 10px 0; color: #673ab7; display: flex; align-items: center; gap: 8px;">🛡️ PMFBY Crop Loss & Insurance Estimator</h3>
+            <p style="font-size: 13px; color: #555; margin-bottom: 12px;">Estimate potential claim relief for weather-damaged crops under Pradhan Mantri Fasal Bima Yojana.</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px;">
+                <select id="insCropSelect" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                    <option value="rice">🌾 Rice / Paddy</option>
+                    <option value="maize">🌽 Maize</option>
+                    <option value="cotton">☁️ Cotton</option>
+                    <option value="chilli">🌶️ Chilli</option>
+                </select>
+                <input type="number" id="insAcresInput" placeholder="Acres" value="1" min="1" style="width: 80px; padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                <select id="damageType" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                    <option value="flood">🌧️ Heavy Rain / Flood (అతివృష్టి)</option>
+                    <option value="drought">☀️ Drought / Dry Spell (అనావృష్టి)</option>
+                    <option value="pest">🐛 Severe Pest Attack (పురుగుల దాడి)</option>
+                </select>
+                <button onclick="estimateInsurance()" style="background: #673ab7; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">📊 Calculate Relief</button>
+            </div>
+            <div id="insResultBox" style="display: none; padding: 12px; background: #ede7f6; border-radius: 8px; border: 1px solid #d1c4e9;">
+                <h4 style="margin: 0 0 6px 0; color: #4527a0; font-size: 14px;">📋 Estimated Relief Assessment:</h4>
+                <p id="insClaimAmount" style="margin: 4px 0; font-size: 13px; font-weight: bold; color: #333;">• Estimated Compensation: --</p>
+                <p id="insDeadline" style="margin: 4px 0; font-size: 12px; color: #d32f2f; font-weight: bold;">• Reporting Deadline: Within 48 hours of damage notice.</p>
+            </div>
+        </div>
+        <!-- SMART SMS NOTIFICATION SIMULATOR CARD -->
+        <div class="sms-card" style="background: #ffffff; padding: 18px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-left: 6px solid #00838f;">
+            <h3 style="margin: 0 0 10px 0; color: #00838f; display: flex; align-items: center; gap: 8px;">📱 Smart SMS / Weather Alert Simulator</h3>
+            <p style="font-size: 13px; color: #555; margin-bottom: 12px;">Test instant mobile notification triggers for extreme weather and pest outbreaks.</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px;">
+                <select id="smsAlertType" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+                    <option value="rain">🌧️ Heavy Rainfall Alert</option>
+                    <option value="pest">🐛 Pest Outbreak Warning</option>
+                    <option value="heat">🔥 Heatwave Advisory</option>
+                </select>
+                <button onclick="simulateSMS()" style="background: #00838f; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">📤 Simulate SMS Alert</button>
+            </div>
+            <div id="smsResultBox" style="display: none; padding: 12px; background: #e0f7fa; border-radius: 8px; border: 1px solid #b2ebf2;">
+                <h4 style="margin: 0 0 6px 0; color: #006064; font-size: 14px;">📨 Simulated Mobile SMS Received:</h4>
+                <p id="smsMessageText" style="margin: 4px 0; font-size: 13px; color: #333; font-family: monospace;">• No alert sent yet.</p>
+            </div>
+        </div>
+    <!-- GOVERNMENT SCHEMES CARD -->
+<div class="schemes-card" style="background: #ffffff; padding: 18px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-left: 6px solid #f57c00;">
+    <h3 style="margin: 0 0 10px 0; color: #e65100; display: flex; align-items: center; gap: 8px;">
+        🏛️ Govt. Schemes & Subsidies
+    </h3>
+    <p style="font-size: 13px; color: #555; margin-bottom: 12px;">
+        Quick access to government welfare schemes and PM-Kisan portal.
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+        <div style="background: #fff3e0; padding: 10px; border-radius: 8px; border: 1px solid #ffe0b2;">
+            <h4 style="margin: 0; font-size: 14px; color: #e65100;">🌾 PM-Kisan Samman Nidhi</h4>
+            <p style="margin: 4px 0 8px 0; font-size: 12px; color: #666;">Check ₹6,000 yearly installment status.</p>
+            <a href="https://pmkisan.gov.in" target="_blank" style="font-size: 12px; font-weight: bold; color: #e65100; text-decoration: none;">Apply / Check Status →</a>
+        </div>
+
+        <div style="background: #e8f5e9; padding: 10px; border-radius: 8px; border: 1px solid #c8e6c9;">
+            <h4 style="margin: 0; font-size: 14px; color: #2e7d32;">🛡️ Pradhan Mantri Fasal Bima</h4>
+            <p style="margin: 4px 0 8px 0; font-size: 12px; color: #666;">Crop insurance coverage for weather losses.</p>
+            <a href="https://pmfby.gov.in" target="_blank" style="font-size: 12px; font-weight: bold; color: #2e7d32; text-decoration: none;">Claim Insurance →</a>
+        </div>
+    </div>
+</div>
+
+
+    <!-- =========================
+         ALERT HISTORY
+    ========================== -->
+
+    <div class="alert-history">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+    <h3 style="margin: 0;">📜 Alert History</h3>
+    <button onclick="clearAlertHistory()" style="background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px;">
+        🗑️ Clear History
+    </button>
+</div>
+        <div id="alertHistoryList">
+
+            <p>
+                No alerts recorded yet.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+    </main>
+    <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+
+    <!-- Connect JavaScript -->
+    <script src="script.js"></script>
+<!-- AI FARM ASSISTANT CHATBOT -->
+<div id="aiChatWidget" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+    <button id="toggleChatBtn" onclick="toggleChat()" style="background-color: #2e7d32; color: white; padding: 12px 18px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+        🤖 Ask Kisan AI
+    </button>
+
+    <div id="chatBox" style="display: none; width: 300px; height: 380px; background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid #ccc; position: absolute; bottom: 50px; right: 0; flex-direction: column; overflow: hidden;">
+        <div style="background: #2e7d32; color: white; padding: 10px; font-weight: bold; display: flex; justify-content: space-between;">
+            <span>🤖 Kisan AI Assistant</span>
+            <span onclick="toggleChat()" style="cursor: pointer;">✖</span>
+        </div>
+        <div id="chatMessages" style="flex: 1; padding: 10px; overflow-y: auto; font-size: 13px; color: #333;">
+            <p style="background: #f1f1f1; padding: 6px 10px; border-radius: 8px; margin-bottom: 8px;">
+                👋 Namaste! Mee crop, pest control, or fertilizers gurinchi emaina adagandi.
+            </p>
+        </div>
+        <div style="display: flex; border-top: 1px solid #ccc; padding: 5px; background: #fff; align-items: center;">
+            <button onclick="startVoiceInput()" style="background: #e8f5e9; border: 1px solid #2e7d32; padding: 6px 10px; border-radius: 6px; margin-right: 4px; cursor: pointer;" title="Speak">🎤</button>
+            <input type="text" id="userInput" placeholder="Ask or click 🎤..." style="flex: 1; border: none; padding: 8px; outline: none;">
+            <button onclick="sendAIMessage()" style="background: #2e7d32; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">Send</button>
+        </div>
+    </div>
+</div>
+<!-- WELCOME NOTIFICATION TOAST -->
+<div id="welcomeToast" style="position: fixed; top: 20px; right: 20px; z-index: 9999; background: #2e7d32; color: white; padding: 12px 20px; border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 8px; transform: translateX(150%); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+    <span>🌱 KisanAlert System Live & Secured!</span>
+</div>
+
+<script>
+    // Show Welcome Toast on Page Load
+    window.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => {
+            let toast = document.getElementById("welcomeToast");
+            if (toast) {
+                toast.style.transform = "translateX(0)";
+                // Hide automatically after 4 seconds
+                setTimeout(() => {
+                    toast.style.transform = "translateX(150%)";
+                }, 4000);
+            }
+        }, 500);
+    });
+</script>
+
+<!-- ============================================================
+     KASANALERT SMART TOOLKIT SIDEBAR (CLEAN & ORGANIZED)
+     ============================================================ -->
+<div style="position: fixed; top: 90px; left: 20px; width: 280px; max-height: calc(100vh - 110px); overflow-y: auto; z-index: 9998; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(46, 125, 50, 0.25); padding: 14px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; gap: 12px;">
+
+    <!-- Sidebar Title -->
+    <div style="font-size: 12px; font-weight: 700; color: #1b5e20; text-transform: uppercase; letter-spacing: 0.8px; display: flex; align-items: center; gap: 6px; border-bottom: 2px solid #e8f5e9; padding-bottom: 8px;">
+        🛠️ Smart Farm Toolkit
+    </div>
+
+    <!-- 1. IoT Field Status -->
+    <div style="background: #e8f5e9; padding: 10px; border-radius: 10px; border: 1px solid #c8e6c9; display: flex; align-items: center; gap: 10px;">
+        <div style="position: relative; width: 30px; height: 30px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0;">
+            📡
+            <span style="position: absolute; top: 0; right: 0; width: 8px; height: 8px; background: #2e7d32; border-radius: 50%; animation: pulseDot 1.5s infinite;"></span>
+        </div>
+        <div>
+            <div style="font-size: 9px; font-weight: 700; color: #2e7d32; text-transform: uppercase;">IoT Status</div>
+            <div id="widgetStatusText" style="font-size: 11px; font-weight: 600; color: #333;">Chilli: Optimal (28.5°C)</div>
+        </div>
+    </div>
+
+    <!-- 2. AI Voice Briefing -->
+    <div onclick="toggleAudioBriefing()" style="background: linear-gradient(135deg, #2e7d32, #1b5e20); color: white; padding: 10px; border-radius: 10px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: transform 0.2s;" title="Click to Play">
+        <div id="audioWaveIcon" style="font-size: 18px;">🔊</div>
+        <div style="flex-grow: 1; overflow: hidden;">
+            <div style="font-size: 9px; font-weight: 700; opacity: 0.85; text-transform: uppercase;">AI Voice Briefing</div>
+            <div id="audioStatusText" style="font-size: 11px; font-weight: 600;">Click to listen audio</div>
+        </div>
+    </div>
+
+    <!-- 3. Quick Profit Estimator -->
+    <div style="background: #f1f8e9; padding: 10px; border-radius: 10px; border: 1px solid #c8e6c9;">
+        <div style="font-size: 10px; font-weight: 700; color: #2e7d32; text-transform: uppercase; margin-bottom: 6px;">💰 Quick Profit Estimator</div>
+        <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+            <input type="number" id="quickAcresInput" placeholder="Acres" value="1" min="0.1" step="0.1" style="width: 55px; padding: 4px 6px; border: 1px solid #c8e6c9; border-radius: 6px; font-size: 11px; outline: none;">
+            <button onclick="calculateQuickProfit()" style="background: #2e7d32; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; flex-grow: 1;">Estimate</button>
+        </div>
+        <div id="quickProfitResult" style="font-size: 10px; color: #333; font-weight: 600; background: white; padding: 5px; border-radius: 6px; border: 1px dashed #a5d6a7;">
+            Enter acres for revenue.
+        </div>
+    </div>
+
+    <!-- 4. Fertilizer Calculator -->
+    <div style="background: #f1f8e9; padding: 10px; border-radius: 10px; border: 1px solid #c8e6c9;">
+        <div style="font-size: 10px; font-weight: 700; color: #2e7d32; text-transform: uppercase; margin-bottom: 6px;">🧪 Fertilizer Bag Calculator</div>
+        <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+            <input type="number" id="calcAcresInput" placeholder="Acres" value="1" min="0.1" step="0.1" style="width: 55px; padding: 4px 6px; border: 1px solid #c8e6c9; border-radius: 6px; font-size: 11px; outline: none;">
+            <select id="fertilizerType" style="padding: 3px; border: 1px solid #c8e6c9; border-radius: 6px; font-size: 10px; flex-grow: 1; outline: none; background: white;">
+                <option value="urea">Urea (50kg)</option>
+                <option value="dap">DAP (50kg)</option>
+            </select>
+        </div>
+        <button onclick="calculateFertilizer()" style="width: 100%; background: #2e7d32; color: white; border: none; padding: 4px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; margin-bottom: 6px;">Calculate Bags</button>
+        <div id="fertResultBox" style="font-size: 10px; color: #333; font-weight: 600; background: white; padding: 5px; border-radius: 6px; border: 1px dashed #a5d6a7;">
+            Select to get required bags.
+        </div>
+    </div>
+
+    <!-- 5. AP Emergency Helplines -->
+    <div style="background: #f1f8e9; padding: 10px; border-radius: 10px; border: 1px solid #c8e6c9;">
+        <div style="font-size: 10px; font-weight: 700; color: #2e7d32; text-transform: uppercase; margin-bottom: 6px;">📞 Emergency Helplines</div>
+        <div style="display: flex; flex-direction: column; gap: 4px; font-size: 10px;">
+            <div style="background: white; padding: 4px 6px; border-radius: 5px; display: flex; justify-content: space-between; border: 1px solid #c8e6c9;">
+                <span>Kisan Call:</span>
+                <a href="tel:18001801551" style="color: #2e7d32; font-weight: 700; text-decoration: none;">1800-180-1551</a>
+            </div>
+            <div style="background: white; padding: 4px 6px; border-radius: 5px; display: flex; justify-content: space-between; border: 1px solid #c8e6c9;">
+                <span>Rythu Bharosa:</span>
+                <a href="tel:1902" style="color: #2e7d32; font-weight: 700; text-decoration: none;">1902</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+@keyframes pulseDot {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.5); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(46, 125, 50, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); }
+}
+</style>
+
+<script>
+    // Audio Briefing Function
+    function toggleAudioBriefing() {
+        const statusText = document.getElementById("audioStatusText");
+        const icon = document.getElementById("audioWaveIcon");
+        
+        if ('speechSynthesis' in window) {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                statusText.innerText = "Click to listen audio";
+                icon.innerText = "🔊";
+                return;
+            }
+            const summaryText = "KisanAlert AI System Update. Current crop status for Chilli is optimal at 28.5 degrees Celsius. Soil moisture is at 22 percent with moderate risk. No major weather warnings detected for today.";
+            const utterance = new SpeechSynthesisUtterance(summaryText);
+            
+            utterance.onstart = function() {
+                statusText.innerText = "Playing audio...";
+                icon.innerText = "🎙️";
+            };
+            utterance.onend = function() {
+                statusText.innerText = "Click to listen again";
+                icon.innerText = "🔊";
+            };
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    // Profit Estimator Function
+    function calculateQuickProfit() {
+        const acres = parseFloat(document.getElementById("quickAcresInput").value) || 1;
+        const resultBox = document.getElementById("quickProfitResult");
+        const totalMin = Math.round(acres * 9 * 18500);
+        const totalMax = Math.round(acres * 9 * 21000);
+        resultBox.innerHTML = `Rev (${acres} Acre): <span style="color: #1b5e20; font-weight: 700;">₹${totalMin.toLocaleString('en-IN')} - ₹${totalMax.toLocaleString('en-IN')}</span>`;
+    }
+
+    // Fertilizer Calculator Function
+    function calculateFertilizer() {
+        const acres = parseFloat(document.getElementById("calcAcresInput").value) || 1;
+        const type = document.getElementById("fertilizerType").value;
+        const resultBox = document.getElementById("fertResultBox");
+        let bagsPerAcre = (type === 'urea') ? 2 : 1.5;
+        let totalBags = (acres * bagsPerAcre).toFixed(1);
+        resultBox.innerHTML = `Req: <span style="color: #1b5e20; font-weight: 700;">${totalBags} Bags (${type.toUpperCase()})</span>`;
+    }
+    // PMFBY Crop Loss & Insurance Estimator Function
+    function estimateInsurance() {
+        const acres = parseFloat(document.getElementById("insAcresInput").value) || 1;
+        const crop = document.getElementById("insCropSelect").value;
+        const damage = document.getElementById("damageType").value;
+        const resultBox = document.getElementById("insResultBox");
+        const claimEl = document.getElementById("insClaimAmount");
+
+        let baseRatePerAcre = 30000; 
+        if (crop === 'cotton' || crop === 'chilli') baseRatePerAcre = 45000;
+
+        let lossPercentage = 0.75; 
+        if (damage === 'drought') lossPercentage = 0.60;
+
+        let estimatedRelief = Math.round(acres * baseRatePerAcre * lossPercentage);
+
+        resultBox.style.display = "block";
+        claimEl.innerHTML = `• Estimated Compensation: <span style="color: #673ab7; font-size: 15px;">₹ ${estimatedRelief.toLocaleString('en-IN')}</span> for ${acres} Acre(s)`;
+    }
+    // Smart SMS Notification Simulator Function
+    function simulateSMS() {
+        const type = document.getElementById("smsAlertType").value;
+        const resultBox = document.getElementById("smsResultBox");
+        const msgText = document.getElementById("smsMessageText");
+
+        resultBox.style.display = "block";
+        let timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        if (type === 'rain') {
+            msgText.innerHTML = `[KisanAlert SMS - ${timeNow}]: ⚠️ Heavy rainfall expected in your mandal over next 24 hours. Please postpone fertilizer application and secure harvested grains.`;
+        } else if (type === 'pest') {
+            msgText.innerHTML = `[KisanAlert SMS - ${timeNow}]: 🐛 Pest Outbreak Warning: High humidity favored for Fall Armyworm. Check fields and spray recommended organic/chemical neem oil if necessary.`;
+        } else {
+            msgText.innerHTML = `[KisanAlert SMS - ${timeNow}]: 🔥 Heatwave Alert: Temperatures exceeding 40°C expected. Ensure life-saving irrigation for young crops during evening hours.`;
+        }
+    }
+</script>
+
+</body>
+
+</html>

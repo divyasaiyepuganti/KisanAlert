@@ -1,0 +1,1508 @@
+/* =========================
+   BASIC RESET
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* =========================
+   BODY
+========================= */
+
+body {
+
+    font-family: Arial, sans-serif;
+
+    background: #f1f8e9;
+
+    color: #263238;
+
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+
+    background: #2e7d32;
+
+    color: white;
+
+    text-align: center;
+
+    padding: 25px;
+
+}
+
+
+header h1 {
+
+    font-size: 32px;
+
+    margin-bottom: 8px;
+
+}
+
+
+header p {
+
+    font-size: 16px;
+
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+main {
+
+    max-width: 900px;
+
+    margin: 40px auto;
+
+    padding: 20px;
+
+}
+
+
+/* =========================
+   LOCATION CARD
+========================= */
+
+.location-card {
+
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 15px;
+
+    text-align: center;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+}
+
+
+.location-card h2 {
+
+    margin-bottom: 20px;
+
+}
+
+
+#locationStatus {
+
+    margin-bottom: 20px;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
+button {
+
+    background: #388e3c;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 25px;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+}
+
+
+button:hover {
+
+    background: #1b5e20;
+
+}
+/* =========================
+   LOCATION DETAILS
+========================= */
+
+#coordinates {
+
+    margin-top: 15px;
+
+    font-size: 14px;
+
+    color: #546e7a;
+
+}
+
+
+#locationName {
+
+    margin-top: 15px;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    color: #2e7d32;
+
+}
+/* =========================
+   WEATHER CARD
+========================= */
+
+.weather-card {
+
+    background: white;
+
+    padding: 30px;
+
+    margin-top: 25px;
+
+    border-radius: 15px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+    text-align: center;
+
+}
+
+
+.weather-card h2 {
+
+    margin-bottom: 15px;
+
+}
+
+
+#weatherStatus {
+
+    margin-bottom: 20px;
+
+    color: #546e7a;
+
+}
+
+
+/* =========================
+   WEATHER GRID
+========================= */
+
+.weather-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+
+}
+
+
+.weather-item {
+
+    background: #f1f8e9;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+}
+
+
+.weather-item span {
+
+    font-size: 30px;
+
+}
+
+
+.weather-item h3 {
+
+    margin: 10px 0;
+
+    font-size: 15px;
+
+}
+
+
+.weather-item p {
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    color: #2e7d32;
+
+}
+
+
+/* =========================
+   WEATHER CONDITION
+========================= */
+
+.weather-condition {
+
+    margin-top: 20px;
+
+    padding: 15px;
+
+    background: #e8f5e9;
+
+    border-radius: 10px;
+
+}
+
+
+.weather-condition p {
+
+    margin-top: 8px;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+    .weather-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .weather-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+/* =========================
+   CROP CARD
+========================= */
+
+.crop-card {
+
+    background: white;
+
+    padding: 30px;
+
+    margin-top: 25px;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.1);
+
+    text-align: center;
+
+}
+
+
+.crop-card h2 {
+
+    margin-bottom: 10px;
+
+}
+
+
+.crop-card > p {
+
+    margin-bottom: 20px;
+
+    color: #546e7a;
+
+}
+
+
+/* =========================
+   CROP SELECT
+========================= */
+
+#cropSelect {
+
+    width: 80%;
+
+    max-width: 400px;
+
+    padding: 12px;
+
+    border: 2px solid #a5d6a7;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    background: white;
+
+    cursor: pointer;
+
+}
+
+
+#cropSelect:focus {
+
+    outline: none;
+
+    border-color: #2e7d32;
+
+}
+
+
+/* =========================
+   CROP STATUS
+========================= */
+
+#cropStatus {
+
+    margin-top: 20px;
+
+    font-weight: bold;
+
+    color: #2e7d32;
+
+}
+/* =========================
+   FARMER ALERT CARD
+========================= */
+
+.alert-card {
+
+    background: white;
+
+    padding: 30px;
+
+    margin-top: 25px;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.1);
+
+    text-align: center;
+
+}
+
+
+.alert-card h2 {
+
+    margin-bottom: 20px;
+
+}
+
+
+/* =========================
+   ALERT BOX
+========================= */
+
+#alertBox {
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    background: #f5f5f5;
+
+    margin-bottom: 20px;
+
+}
+
+
+#alertTitle {
+
+    margin-bottom: 10px;
+
+}
+
+
+#alertMessage {
+
+    margin-bottom: 15px;
+
+    line-height: 1.5;
+
+}
+
+
+#alertAction {
+
+    font-weight: bold;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================
+   ALERT BUTTON
+========================= */
+
+#checkAlertButton {
+
+    background: #2e7d32;
+
+}
+
+
+#checkAlertButton:hover {
+
+    background: #1b5e20;
+
+}
+/* =========================
+   FORECAST SECTION
+========================= */
+
+.forecast-section {
+
+    margin-top: 30px;
+
+    padding-top: 25px;
+
+    border-top: 1px solid #cfd8dc;
+
+}
+
+
+.forecast-section h3 {
+
+    margin-bottom: 20px;
+
+}
+
+
+/* =========================
+   FORECAST CONTAINER
+========================= */
+
+#forecastContainer {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+
+}
+
+
+/* =========================
+   FORECAST CARD
+========================= */
+
+.forecast-day {
+
+    background: #f1f8e9;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+}
+
+
+.forecast-day h4 {
+
+    margin-bottom: 12px;
+
+    color: #2e7d32;
+
+}
+
+
+.forecast-day p {
+
+    margin: 7px 0;
+
+    font-size: 14px;
+
+}
+
+
+/* =========================
+   MOBILE FORECAST
+========================= */
+
+@media (max-width: 700px) {
+
+    #forecastContainer {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+/* =========================
+   EARLY WARNING
+========================= */
+
+#earlyWarningBox {
+
+    margin-top: 20px;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    background: #e3f2fd;
+
+    border-left: 5px solid #1976d2;
+
+}
+
+
+#earlyWarningBox h3 {
+
+    margin-bottom: 15px;
+
+}
+
+
+#earlyWarningTitle {
+
+    font-weight: bold;
+
+    margin-bottom: 10px;
+
+}
+
+
+#earlyWarningMessage {
+
+    margin-bottom: 10px;
+
+    line-height: 1.5;
+
+}
+
+
+#earlyWarningAction {
+
+    font-weight: bold;
+
+    line-height: 1.5;
+
+}
+/* =========================
+   SMART FARM ACTION
+========================= */
+
+#farmActionBox {
+
+    margin-top: 20px;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    background: #f3e5f5;
+
+    border-left: 5px solid #7b1fa2;
+
+}
+
+
+#farmActionBox h3 {
+
+    margin-bottom: 15px;
+
+}
+
+
+#farmActionTitle {
+
+    font-weight: bold;
+
+    margin-bottom: 10px;
+
+}
+
+
+#farmActionMessage {
+
+    line-height: 1.5;
+
+}
+/* =========================
+   FARM STATUS
+========================= */
+
+.farm-status {
+
+    margin-top: 30px;
+
+    padding-top: 25px;
+
+    border-top: 1px solid #cfd8dc;
+
+}
+
+
+.farm-status h3 {
+
+    margin-bottom: 20px;
+
+}
+
+
+/* =========================
+   STATUS GRID
+========================= */
+
+.status-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+
+}
+
+
+.status-item {
+
+    padding: 20px;
+
+    background: #f5f5f5;
+
+    border-radius: 12px;
+
+    text-align: center;
+
+}
+
+
+.status-icon {
+
+    font-size: 30px;
+
+}
+
+
+.status-item h4 {
+
+    margin: 10px 0;
+
+}
+
+
+.status-item p {
+
+    font-weight: bold;
+
+}
+
+
+/* =========================
+   STATUS STATES
+========================= */
+
+.status-normal {
+
+    background: #e8f5e9;
+
+    color: #2e7d32;
+
+}
+
+
+.status-watch {
+
+    background: #fff8e1;
+
+    color: #f57f17;
+
+}
+
+
+.status-danger {
+
+    background: #ffebee;
+
+    color: #c62828;
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+    .status-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .status-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+/* =========================
+   EARLY WARNING
+========================= */
+
+#earlyWarningBox {
+
+    margin-top: 20px;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    background: #e3f2fd;
+
+    border-left: 5px solid #1976d2;
+
+}
+
+
+#earlyWarningBox h3 {
+
+    margin-bottom: 15px;
+
+}
+
+
+#earlyWarningTitle {
+
+    font-weight: bold;
+
+    margin-bottom: 10px;
+
+}
+
+
+#earlyWarningMessage {
+
+    margin-bottom: 10px;
+
+    line-height: 1.5;
+
+}
+
+
+#earlyWarningAction {
+
+    font-weight: bold;
+
+    line-height: 1.5;
+
+}
+/* =========================
+   SMART FARM ACTION
+========================= */
+
+#farmActionBox {
+
+    margin-top: 20px;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    background: #f3e5f5;
+
+    border-left: 5px solid #7b1fa2;
+
+}
+
+
+#farmActionBox h3 {
+
+    margin-bottom: 15px;
+
+}
+
+
+#farmActionTitle {
+
+    font-weight: bold;
+
+    margin-bottom: 10px;
+
+}
+
+
+#farmActionMessage {
+
+    line-height: 1.5;
+
+}
+/* =========================
+   FARM STATUS
+========================= */
+
+.farm-status {
+
+    margin-top: 30px;
+
+    padding-top: 25px;
+
+    border-top: 1px solid #cfd8dc;
+
+}
+
+
+.farm-status h3 {
+
+    margin-bottom: 20px;
+
+}
+
+
+/* =========================
+   STATUS GRID
+========================= */
+
+.status-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+
+}
+
+
+.status-item {
+
+    padding: 20px;
+
+    background: #f5f5f5;
+
+    border-radius: 12px;
+
+    text-align: center;
+
+}
+
+
+.status-icon {
+
+    font-size: 30px;
+
+}
+
+
+.status-item h4 {
+
+    margin: 10px 0;
+
+}
+
+
+.status-item p {
+
+    font-weight: bold;
+
+}
+
+
+/* =========================
+   STATUS STATES
+========================= */
+
+.status-normal {
+
+    background: #e8f5e9;
+
+    color: #2e7d32;
+
+}
+
+
+.status-watch {
+
+    background: #fff8e1;
+
+    color: #f57f17;
+
+}
+
+
+.status-danger {
+
+    background: #ffebee;
+
+    color: #c62828;
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+    .status-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .status-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+/* =========================
+   FIELD MAP
+========================= */
+
+.map-section {
+
+    margin-top: 30px;
+
+    padding-top: 25px;
+
+    border-top: 1px solid #cfd8dc;
+
+}
+
+
+.map-section h3 {
+
+    margin-bottom: 8px;
+
+}
+
+
+.map-section p {
+
+    margin-bottom: 15px;
+
+    color: #546e7a;
+
+}
+
+
+/* =========================
+   MAP
+========================= */
+
+#fieldMap {
+
+    width: 100%;
+
+    height: 350px;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    border: 2px solid #c8e6c9;
+
+}
+/* =========================
+   FIELD ACTIVITY PLANNER
+========================= */
+
+#activityPlannerBox {
+
+    margin-top: 20px;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    background: #fff8e1;
+
+    border-left: 5px solid #f9a825;
+
+}
+
+
+#activityPlannerBox h3 {
+
+    margin-bottom: 10px;
+
+}
+
+
+#activityPlannerStatus {
+
+    margin-bottom: 20px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================
+   ACTIVITY LIST
+========================= */
+
+#activityList {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 12px;
+
+}
+
+
+.activity-item {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 15px;
+
+    background: white;
+
+    border-radius: 8px;
+
+}
+
+
+.activity-item strong {
+
+    font-size: 14px;
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    #activityList {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+/* Add at the end of style.css */
+.alert-history {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #cfd8dc;
+    text-align: left;
+}
+
+.alert-history-item {
+    background: #f5f5f5;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    border-left: 4px solid #2e7d32;
+}
+
+.alert-history-item h4 {
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+.alert-history-item p {
+    font-size: 13px;
+    color: #424242;
+    margin-bottom: 5px;
+}
+
+.alert-history-item small {
+    color: #757575;
+    font-size: 11px;
+}
+
+/* ============================================================
+   STEP 12: LANGUAGE SELECTOR STYLES
+   ============================================================ */
+.lang-selector-container {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.lang-selector-container label {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 14px;
+    margin-right: 6px;
+}
+
+.lang-selector-container select {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #ffffff;
+    background-color: #ffffff;
+    color: #2e7d32;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.lang-selector-container select:hover {
+    background-color: #f0fdf4;
+}
+/* ============================================================
+   STEP 13: VOICE WARNING BUTTON STYLES
+   ============================================================ */
+#speakBtn {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #2e7d32;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#speakBtn:hover {
+    background-color: #1b5e20;
+}
+
+#speakBtn:active {
+    transform: scale(0.98);
+}
+/* ============================================================
+   STEP 14: MOBILE RESPONSIVE UI STYLES
+   ============================================================ */
+@media screen and (max-width: 768px) {
+    /* Container adjustments */
+    body {
+        padding: 10px;
+    }
+
+    header {
+        padding: 15px 10px;
+        text-align: center;
+    }
+
+    /* Grid layout to single column stack */
+    .weather-grid,
+    .forecast-grid,
+    .field-activity-grid,
+    .status-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    /* Card widths for mobile */
+    .weather-card,
+    .forecast-card,
+    .status-card,
+    .activity-card {
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    /* Language dropdown mobile fit */
+    .lang-selector-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 8px;
+    }
+
+    /* Map height adjustment */
+    #map {
+        height: 250px !important;
+    }
+}
+/* ============================================================
+   EXTRA FEATURE: PRINT / PDF STYLING
+   ============================================================ */
+@media print {
+    /* Hide non-essential buttons and UI elements when printing */
+    header button,
+    #speakBtn,
+    .lang-selector-container,
+    #map {
+        display: none !important;
+    }
+
+    body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+
+    .location-card, .weather-card {
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+    }
+}
+/* ============================================================
+   EXTRA FEATURE: PRINT / PDF STYLING
+   ============================================================ */
+@media print {
+    header button,
+    #speakBtn,
+    .lang-selector-container,
+    #map {
+        display: none !important;
+    }
+
+    body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+
+    .location-card, .weather-card {
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+    }
+}
+/* ============================================================
+   UI VISUAL ATTRACTIVENESS & MODERN DESIGN UPGRADE
+   ============================================================ */
+
+/* Smooth Transition for all interactive cards */
+.drought-card, .pest-gallery-card, .schemes-card, .alert-card, .alert-history {
+    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+    border-radius: 16px !important;
+}
+
+/* Floating Card Hover Effect */
+.drought-card:hover, .pest-gallery-card:hover, .schemes-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Modern Gradient Buttons */
+button {
+    transition: all 0.2s ease !important;
+    border-radius: 8px !important;
+}
+
+button:hover {
+    filter: brightness(1.08) !important;
+    transform: scale(1.02) !important;
+}
+
+/* Glowing Pulsing Effect for Warning Status */
+#droughtStatus, #moistureLevel {
+    animation: pulseGlow 2s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+    0% { opacity: 0.85; }
+    50% { opacity: 1; text-shadow: 0 0 8px rgba(211, 47, 47, 0.3); }
+    100% { opacity: 0.85; }
+}
+
+/* Custom Scrollbar for Alert History */
+#alertHistoryList::-webkit-scrollbar {
+    width: 6px;
+}
+#alertHistoryList::-webkit-scrollbar-thumb {
+    background: #c8e6c9;
+    border-radius: 10px;
+}
+/* ============================================================
+   INTERACTIVE HOVER ANIMATIONS & VISUAL EFFECTS
+   ============================================================ */
+
+/* 1. Cards Floating Animation */
+.drought-card, 
+.pest-gallery-card, 
+.schemes-card, 
+.alert-card, 
+.alert-history {
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.drought-card:hover, 
+.pest-gallery-card:hover, 
+.schemes-card:hover,
+.alert-card:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 2. Pest & Disease Image Zoom Effect */
+.pest-gallery-card img {
+    transition: transform 0.4s ease !important;
+}
+
+.pest-gallery-card div[style*="border"]:hover img {
+    transform: scale(1.08) !important;
+}
+
+/* 3. Button Pulse & Lift Effect */
+button {
+    transition: all 0.2s ease-in-out !important;
+}
+
+button:hover {
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    filter: brightness(1.05) !important;
+}
+
+button:active {
+    transform: translateY(0) scale(0.98) !important;
+}
+
+/* 4. Scheme Links Hover Glow */
+.schemes-card a {
+    display: inline-block;
+    transition: transform 0.2s ease, color 0.2s ease !important;
+}
+
+.schemes-card a:hover {
+    transform: translateX(4px) !important;
+    text-decoration: underline !important;
+}
+/* --- NON-DESTRUCTIVE MODERN GLOW & HOVER UPGRADE --- */
+div[class*="card"], .alert-history {
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+div[class*="card"]:hover, .alert-history:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 15px 30px rgba(46, 125, 50, 0.15) !important;
+    border-color: #81c784 !important;
+}
+
+button {
+    transition: all 0.25s ease !important;
+}
+
+button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12) !important;
+}
+/* ============================================================
+   ULTRA-MODERN UI POLISH & GLOW EFFECTS
+   ============================================================ */
+
+/* Smooth Card Hover Lift & Glow */
+div[class*="card"], .alert-history {
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+div[class*="card"]:hover, .alert-history:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 14px 28px rgba(46, 125, 50, 0.16) !important;
+}
+
+/* Floating AI Chat Button (Bottom Right) Glowing Pulse */
+.fixed, button[onclick*="Kisan"], .ai-float-btn {
+    animation: glowPulse 2.5s infinite;
+}
+
+@keyframes glowPulse {
+    0% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.4); }
+    70% { box-shadow: 0 0 0 12px rgba(46, 125, 50, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); }
+}
+
+/* Elegant Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f6f2;
+}
+::-webkit-scrollbar-thumb {
+    background: #2e7d32;
+    border-radius: 4px;
+}
+/* ============================================================
+   PAGE LOAD ATTRACTIVE ENTRANCE ANIMATIONS
+   ============================================================ */
+
+/* Page Fade-in Effect on Load */
+body {
+    animation: pageLoadFade 0.8s ease-out forwards;
+}
+
+@keyframes pageLoadFade {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header & Main Cards Staggered Entrance */
+header, .drought-card, .pest-gallery-card, .schemes-card, .alert-card {
+    animation: cardSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cardSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Modern Gradient Header with Soft Shadow */
+header, .header-class, div[style*="background-color: #2e7d32"], div[style*="background: #2e7d32"] {
+    box-shadow: 0 10px 25px rgba(46, 125, 50, 0.25) !important;
+    border-bottom: 4px solid #1b5e20 !important;
+}
